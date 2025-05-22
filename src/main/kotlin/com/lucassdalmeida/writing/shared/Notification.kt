@@ -3,9 +3,9 @@ package com.lucassdalmeida.writing.shared
 class Notification {
     private val messages = mutableMapOf<String, MutableList<Message>>()
 
-    fun hasMessages() = !hasNotMessages()
+    fun hasMessages() = !hasNoMessages()
 
-    fun hasNotMessages() = messages.isEmpty()
+    fun hasNoMessages() = messages.isEmpty()
 
     fun addMessagesFor(subject: String, message: String, cause: Throwable? = null) {
         addMessagesFor(subject, Message(message, cause))
@@ -18,7 +18,7 @@ class Notification {
     }
 
     override fun toString(): String {
-        if (hasNotMessages()) return "{}"
+        if (hasNoMessages()) return "{}"
 
         return buildString {
             append("{\n")
