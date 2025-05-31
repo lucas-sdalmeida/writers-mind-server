@@ -2,8 +2,8 @@ package com.lucassdalmeida.writing.infrastructure.story.repository.postgres
 
 import com.lucassdalmeida.writing.application.story.repository.StoryDto
 import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import jakarta.persistence.Table
-import org.springframework.data.annotation.Id
 import java.util.UUID
 
 @Entity
