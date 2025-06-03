@@ -7,6 +7,7 @@ import com.lucassdalmeida.writing.application.story.find.FindOneStoryService
 import com.lucassdalmeida.writing.application.story.repository.StoryDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,6 +18,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/story")
+@CrossOrigin
 class StoryController(
     private val createStoryService: CreateStoryService,
     private val findOneStoryService: FindOneStoryService,
