@@ -13,6 +13,7 @@ data class StoryDto(
     val setting: String?,
     val summary: String?,
     val coverImageUri: String?,
+    val authorId: UUID,
 )
 
 fun Story.toDto() = StoryDto(
@@ -25,4 +26,5 @@ fun Story.toDto() = StoryDto(
     setting,
     summary,
     coverImageUri,
+    authorId.value,
 )

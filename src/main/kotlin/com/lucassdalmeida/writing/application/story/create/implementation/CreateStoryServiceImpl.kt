@@ -1,11 +1,14 @@
 package com.lucassdalmeida.writing.application.story.create.implementation
 
+import com.lucassdalmeida.writing.application.author.repository.AuthorRepository
+import com.lucassdalmeida.writing.application.shared.exceptions.EntityNotFoundException
 import com.lucassdalmeida.writing.application.story.create.CreateStoryService
 import com.lucassdalmeida.writing.application.story.create.CreateStoryService.RequestModel
 import com.lucassdalmeida.writing.application.story.repository.StoryRepository
 import com.lucassdalmeida.writing.application.story.repository.toDto
 import com.lucassdalmeida.writing.application.timeline.repository.TimeLineRepository
 import com.lucassdalmeida.writing.application.timeline.repository.toDto
+import com.lucassdalmeida.writing.domain.model.author.toAuthorId
 import com.lucassdalmeida.writing.domain.model.story.Story
 import com.lucassdalmeida.writing.domain.model.story.toStoryId
 import com.lucassdalmeida.writing.domain.model.timeline.TimeLine
@@ -16,9 +19,13 @@ import java.util.UUID
 class CreateStoryServiceImpl(
     private val repository: StoryRepository,
     private val timeLineRepository: TimeLineRepository,
+    private val authorRepository: AuthorRepository,
     private val uuidGenerator: UuidGenerator,
 ) : CreateStoryService {
     override fun create(request: RequestModel): UUID {
+        if (!authorRepository.existsById(request.authorId))
+            throw EntityNotFoundException("Unable to create story because the author ${request.authorId} doe not exists!")
+
         val id = uuidGenerator.randomUuid()
         val story = request.toStory(id)
         val timeLine = TimeLine(id.toTimeLineId())
@@ -38,6 +45,7 @@ class CreateStoryServiceImpl(
         mainPlot,
         setting,
         summary,
-        coverImageUri
+        coverImageUri,
+        authorId.toAuthorId(),
     )
 }

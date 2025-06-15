@@ -1,5 +1,6 @@
 package com.lucassdalmeida.writing.domain.model.story
 
+import com.lucassdalmeida.writing.domain.model.author.AuthorId
 import com.lucassdalmeida.writing.shared.Entity
 import com.lucassdalmeida.writing.shared.Notification
 
@@ -12,7 +13,8 @@ class Story(
     mainPlot: String?,
     setting: String?,
     summary: String?,
-    coverImageUri: String?
+    coverImageUri: String?,
+    val authorId: AuthorId,
 ) : Entity<StoryId>(id) {
     val title = title.trim()
 

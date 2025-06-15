@@ -14,5 +14,6 @@ interface CreateStoryService {
         val setting: String?,
         val summary: String?,
         val coverImageUri: String?,
+        val authorId: UUID,
     )
 }
