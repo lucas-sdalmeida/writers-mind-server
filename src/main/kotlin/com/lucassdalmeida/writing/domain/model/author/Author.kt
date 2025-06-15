@@ -1,12 +1,14 @@
 package com.lucassdalmeida.writing.domain.model.author
 
+import com.lucassdalmeida.writing.domain.model.account.UserAccountId
 import com.lucassdalmeida.writing.shared.Entity
 import com.lucassdalmeida.writing.shared.Notification
 
 class Author(
     id: AuthorId,
     name: String,
-    pseudonym: String? = null
+    pseudonym: String? = null,
+    accountId: UserAccountId,
 ) : Entity<AuthorId>(id) {
     val name: String = name.trim()
     val pseudonym: String? = pseudonym?.trim()
