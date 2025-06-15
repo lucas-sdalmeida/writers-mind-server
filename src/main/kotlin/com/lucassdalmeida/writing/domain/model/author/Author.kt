@@ -8,7 +8,7 @@ class Author(
     id: AuthorId,
     name: String,
     pseudonym: String? = null,
-    accountId: UserAccountId,
+    val accountId: UserAccountId,
 ) : Entity<AuthorId>(id) {
     val name: String = name.trim()
     val pseudonym: String? = pseudonym?.trim()
