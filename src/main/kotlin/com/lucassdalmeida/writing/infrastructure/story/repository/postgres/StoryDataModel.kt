@@ -18,10 +18,11 @@ data class StoryDataModel(
     val setting: String?,
     val summary: String?,
     val coverImageUri: String?,
+    val authorId: UUID
 ) {
     fun toDto() =
-        StoryDto(id, title, themes, objectives, mainPlot, genres, setting, summary, coverImageUri)
+        StoryDto(id, title, themes, objectives, mainPlot, genres, setting, summary, coverImageUri, authorId)
 }
 
 fun StoryDto.toDataModel()
-    = StoryDataModel(id, title, themes, objectives, mainPlot, genres, setting, summary, coverImageUri)
+    = StoryDataModel(id, title, themes, objectives, mainPlot, genres, setting, summary, coverImageUri, authorId)
