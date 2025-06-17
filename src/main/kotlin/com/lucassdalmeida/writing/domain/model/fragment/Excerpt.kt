@@ -1,15 +1,19 @@
 package com.lucassdalmeida.writing.domain.model.fragment
 
+import com.lucassdalmeida.writing.domain.model.author.AuthorId
+import com.lucassdalmeida.writing.domain.model.story.StoryId
 import com.lucassdalmeida.writing.shared.Notification
 
 class Excerpt(
     id: StoryFragmentId,
+    storyId: StoryId,
+    authorId: AuthorId,
     title: String,
     summary: String?,
     placementPosition: TimeLinePosition,
     actualPosition: TimeLinePosition? = null,
     val fileUri: String,
-) : StoryFragment(id, title, summary, placementPosition, actualPosition) {
+) : StoryFragment(id, storyId, authorId, title, summary, placementPosition, actualPosition) {
     override val lastPosition get() = actualPosition
 
     init {

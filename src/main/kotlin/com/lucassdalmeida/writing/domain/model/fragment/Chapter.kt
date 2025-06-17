@@ -1,15 +1,19 @@
 package com.lucassdalmeida.writing.domain.model.fragment
 
+import com.lucassdalmeida.writing.domain.model.author.AuthorId
+import com.lucassdalmeida.writing.domain.model.story.StoryId
 import com.lucassdalmeida.writing.shared.Notification
 
 class Chapter(
     id: StoryFragmentId,
+    storyId: StoryId,
+    authorId: AuthorId,
     title: String,
     summary: String?,
     placementPosition: TimeLinePosition,
     actualPosition: TimeLinePosition? = null,
     excerpts: List<Excerpt>,
-) : StoryFragment(id, title, summary, placementPosition, actualPosition) {
+) : StoryFragment(id, storyId, authorId, title, summary, placementPosition, actualPosition) {
     private val _excerpts = excerpts.toMutableList()
     val excerpts get() = _excerpts.toList()
 
