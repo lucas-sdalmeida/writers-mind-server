@@ -6,10 +6,11 @@ import com.lucassdalmeida.writing.shared.Notification
 abstract class StoryFragment(
     id: StoryFragmentId,
     val title: String,
-    val summary: String?,
+    summary: String?,
     val placementPosition: TimeLinePosition,
     actualPosition: TimeLinePosition? = null,
 ) : Entity<StoryFragmentId>(id) {
+    val summary = if (summary.isNullOrBlank()) null else summary
     val actualPosition = actualPosition ?: placementPosition
     abstract val lastPosition: TimeLinePosition
 
@@ -21,8 +22,6 @@ abstract class StoryFragment(
     private fun validate() = Notification().also {
         if (title.isBlank())
             it.addMessagesFor("storyFragment", "A story fragment must not have a blank title!")
-        if (summary != null && summary.isBlank())
-            it.addMessagesFor("storyFragment", "A story fragment summary, when provided, must not be blank!")
     }
 
     fun isNear(other: StoryFragment) = actualPosition.isNear(other.actualPosition)
