@@ -6,14 +6,18 @@ import com.lucassdalmeida.writing.domain.model.pack.StoryPackId
 import com.lucassdalmeida.writing.domain.model.story.StoryId
 import com.lucassdalmeida.writing.shared.Entity
 import com.lucassdalmeida.writing.shared.Notification
+import java.time.LocalDate
+import java.time.LocalTime
 
 abstract class StoryFragment(
     id: StoryFragmentId,
-    storyId: StoryId,
-    authorId: AuthorId,
+    val storyId: StoryId,
+    val authorId: AuthorId,
     val storyPackId: StoryPackId,
     val title: String,
     summary: String?,
+    val momentDate: LocalDate?,
+    val momentTime: LocalTime?,
     val placementPosition: TimeLinePosition,
     actualPosition: TimeLinePosition? = null,
 ) : Entity<StoryFragmentId>(id) {
