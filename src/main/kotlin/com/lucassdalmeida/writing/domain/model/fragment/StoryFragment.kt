@@ -31,6 +31,12 @@ abstract class StoryFragment(
             it.addMessagesFor("storyFragment", "A story fragment must not have a blank title!")
     }
 
-    fun isNear(other: StoryFragment) = actualPosition.isNear(other.actualPosition)
-            || lastPosition.isNear(other.lastPosition)
+    fun isNear(other: StoryFragment): Boolean {
+        return actualPosition.isNear(other.actualPosition)
+                || actualPosition.isNear(other.lastPosition)
+                || actualPosition >= other.actualPosition && actualPosition <= other.lastPosition
+                || lastPosition.isNear(other.actualPosition)
+                || lastPosition.isNear(other.lastPosition)
+                || lastPosition >= other.actualPosition && lastPosition <= other.lastPosition
+    }
 }
