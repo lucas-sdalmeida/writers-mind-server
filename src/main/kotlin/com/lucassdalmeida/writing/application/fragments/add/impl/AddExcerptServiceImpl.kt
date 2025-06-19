@@ -9,6 +9,7 @@ import com.lucassdalmeida.writing.application.fragments.repository.StoryFragment
 import com.lucassdalmeida.writing.application.fragments.repository.toDto
 import com.lucassdalmeida.writing.application.shared.exceptions.EntityNotFoundException
 import com.lucassdalmeida.writing.application.shared.exceptions.UnauthenticatedUserException
+import com.lucassdalmeida.writing.application.shared.exceptions.UnauthorizedUserException
 import com.lucassdalmeida.writing.application.story.repository.StoryRepository
 import com.lucassdalmeida.writing.application.story.repository.toStory
 import com.lucassdalmeida.writing.domain.model.author.toAuthorId
