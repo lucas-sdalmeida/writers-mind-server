@@ -18,11 +18,19 @@ abstract class StoryFragment(
     summary: String?,
     val momentDate: LocalDate?,
     val momentTime: LocalTime?,
-    val placementPosition: TimeLinePosition,
+    placementPosition: TimeLinePosition,
     actualPosition: TimeLinePosition? = null,
 ) : Entity<StoryFragmentId>(id) {
     val summary = if (summary.isNullOrBlank()) null else summary
-    val actualPosition = actualPosition ?: placementPosition
+
+    var placementPosition = placementPosition
+        set(value) {
+            if (field == actualPosition) actualPosition = value
+            field = value
+        }
+    var actualPosition = actualPosition ?: placementPosition
+        private set
+
     abstract val lastPosition: TimeLinePosition
 
     init {

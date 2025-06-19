@@ -6,4 +6,4 @@ import java.util.UUID
 @JvmInline
 value class StoryPackId(val value: UUID?) : Identifier
 
-fun UUID.toStoryPackId() = StoryPackId(this)
+fun UUID?.toStoryPackId() = StoryPackId(this)
