@@ -1,5 +1,6 @@
 package com.lucassdalmeida.writing.web.story
 
+import com.lucassdalmeida.writing.application.author.repository.AuthorRepository
 import com.lucassdalmeida.writing.application.story.create.CreateStoryService
 import com.lucassdalmeida.writing.application.story.create.implementation.CreateStoryServiceImpl
 import com.lucassdalmeida.writing.application.story.find.FindAllStoriesService
@@ -14,8 +15,12 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class StoryServicesConfig {
     @Bean
-    fun createStoryService(repository: StoryRepository, uuidGenerator: UuidGenerator): CreateStoryService =
-        CreateStoryServiceImpl(repository, uuidGenerator)
+    fun createStoryService(
+        repository: StoryRepository,
+        authorRepository: AuthorRepository,
+        uuidGenerator: UuidGenerator,
+    ): CreateStoryService =
+        CreateStoryServiceImpl(repository, authorRepository, uuidGenerator)
 
     @Bean
     fun findOneStoryService(repository: StoryRepository): FindOneStoryService =

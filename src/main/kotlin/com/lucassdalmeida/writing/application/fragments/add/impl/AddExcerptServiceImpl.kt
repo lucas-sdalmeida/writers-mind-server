@@ -104,8 +104,8 @@ class AddExcerptServiceImpl(
         val lines = fragments.groupBy { it.actualPosition.line }
         if (lines[requestLine]?.any { it.isNear(excerpt) } == false) return requestLine
 
-        for ((line, fragments) in lines) {
-            if (line == requestLine || fragments.any { it.isNear(excerpt) }) continue
+        for ((line, lineFragments) in lines) {
+            if (line == requestLine || lineFragments.any { it.isNear(excerpt) }) continue
             return line
         }
 
