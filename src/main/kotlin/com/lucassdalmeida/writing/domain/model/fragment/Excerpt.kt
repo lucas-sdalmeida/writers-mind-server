@@ -11,7 +11,7 @@ class Excerpt(
     id: StoryFragmentId,
     storyId: StoryId,
     authorId: AuthorId,
-    narrativeThreadId: NarrativeThreadId,
+    narrativeThreadId: NarrativeThreadId?,
     title: String,
     summary: String?,
     momentDate: LocalDate?,

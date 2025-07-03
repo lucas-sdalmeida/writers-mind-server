@@ -26,7 +26,7 @@ data class StoryFragmentDto(
 
 fun StoryFragment.toDto() = StoryFragmentDto(
     id.value,
-    storyId.value, authorId.value, narrativeThreadId.value,
+    storyId.value, authorId.value, narrativeThreadId?.value,
     title, summary,
     momentDate, momentTime,
     placementPosition.line, placementPosition.x,

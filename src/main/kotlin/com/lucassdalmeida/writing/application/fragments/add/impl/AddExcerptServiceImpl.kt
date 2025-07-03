@@ -38,7 +38,7 @@ class AddExcerptServiceImpl(
         val excerpt = request.toExcerpt(id)
 
         val fragments = storyFragmentRepository
-            .findAllByPackId(request.packId)
+            .findAllByNarrativeThreadId(request.packId)
             .map(::mapFragmentDtoToEntity)
         val actualLine = calculatePlacementLine(excerpt, fragments)
 
