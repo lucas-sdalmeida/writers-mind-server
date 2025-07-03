@@ -81,7 +81,7 @@ class AddExcerptServiceImpl(
 
     private fun StoryFragmentDto.toExcerpt() = Excerpt(
         id.toStoryFragmentId(),
-        storyId.toStoryId(), authorId.toAuthorId(), packId.toNarrativeThreadId(),
+        storyId.toStoryId(), authorId.toAuthorId(), narrativeThreadId.toNarrativeThreadId(),
         title, summary,
         momentDate, momentTime,
         TimeLinePosition(placementPositionLine, placementPositionX),
@@ -91,7 +91,7 @@ class AddExcerptServiceImpl(
 
     private fun StoryFragmentDto.toChapter(excerpts: List<Excerpt>) = Chapter(
         id.toStoryFragmentId(),
-        storyId.toStoryId(), authorId.toAuthorId(), packId.toNarrativeThreadId(),
+        storyId.toStoryId(), authorId.toAuthorId(), narrativeThreadId.toNarrativeThreadId(),
         title, summary,
         momentDate, momentTime,
         TimeLinePosition(placementPositionLine, placementPositionX),
