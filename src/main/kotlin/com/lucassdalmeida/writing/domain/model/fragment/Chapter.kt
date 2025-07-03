@@ -1,45 +1,91 @@
 package com.lucassdalmeida.writing.domain.model.fragment
 
 import com.lucassdalmeida.writing.domain.model.author.AuthorId
-import com.lucassdalmeida.writing.domain.model.pack.StoryPackId
 import com.lucassdalmeida.writing.domain.model.story.StoryId
 import com.lucassdalmeida.writing.shared.Notification
 import java.time.LocalDate
 import java.time.LocalTime
 
-class Chapter(
+class Chapter private constructor(
     id: StoryFragmentId,
     storyId: StoryId,
     authorId: AuthorId,
-    storyPackId: StoryPackId,
     title: String,
     summary: String?,
     momentDate: LocalDate?,
     momentTime: LocalTime?,
     placementPosition: TimeLinePosition,
-    actualPosition: TimeLinePosition? = null,
-    excerpts: List<Excerpt>,
-) : StoryFragment(id, storyId, authorId, storyPackId, title, summary, momentDate, momentTime, placementPosition, actualPosition) {
+    actualPosition: TimeLinePosition?,
+    excerpts: List<StoryFragmentId>,
+    lastPosition: TimeLinePosition?,
+) : StoryFragment(
+    id, storyId, authorId, title, summary, momentDate, momentTime, placementPosition, actualPosition
+) {
     private val _excerpts = excerpts.toMutableList()
     val excerpts get() = _excerpts.toList()
 
-    override val lastPosition get() = _excerpts.last().actualPosition
-
-    val endDate get() = _excerpts.last().momentDate
-    val endTime get() = _excerpts.last().momentTime
+    private var _lastPosition =
+        if (lastPosition == null || lastPosition == placementPosition) placementPosition + 3.0 else lastPosition
+    override val lastPosition get() = _lastPosition
 
     init {
         val notification = validate()
         require(notification.hasNoMessages()) { notification.toString() }
-        _excerpts.sortBy { it.actualPosition }
     }
 
     private fun validate() = Notification().also {
-        if (_excerpts.isEmpty())
-            it.addMessagesFor("chapter", "The chapter must have at least one inner excerpt. Provided: $_excerpts")
+        if (_excerpts.isEmpty()) {
+            it.addMessagesFor(
+                "chapter",
+                "The chapter must have at least one inner excerpt. Provided: $_excerpts",
+            )
+        }
+    }
 
-        val lines = _excerpts.distinctBy { e -> e.actualPosition.line }
-        if (lines.size > 1)
-            it.addMessagesFor("chapter", "All excerpts of a chapter must be on the same line. Excerpts: $_excerpts; Lines: $lines")
+    constructor(
+        id: StoryFragmentId,
+        storyId: StoryId,
+        authorId: AuthorId,
+        title: String,
+        summary: String?,
+        momentDate: LocalDate?,
+        momentTime: LocalTime?,
+        placementPosition: TimeLinePosition,
+        actualPosition: TimeLinePosition?,
+        excerpts: List<Excerpt>,
+    ) : this(
+        id, storyId, authorId,
+        title, summary,
+        momentDate, momentTime,
+        placementPosition, actualPosition,
+        excerpts.map { it.id },
+        excerpts.maxByOrNull { it.actualPosition }?.actualPosition,
+    ) {
+        val lines = excerpts.groupBy { it.actualPosition.line }
+        val notification = Notification()
+
+        if (lines.size > 1) {
+            notification.addMessagesFor(
+                "chapter",
+                "All the chapter excerpts must be on the same line. Provided $excerpts",
+            )
+        }
+
+        require(notification.hasNoMessages()) { notification.toString() }
+    }
+
+    fun addExcerpt(excerpt: Excerpt) {
+        if (excerpt.id in _excerpts) return
+
+        excerpt.apply {
+            placementPosition = placementPosition.copy(line = placementPosition.line)
+        }
+        if (excerpt.placementPosition > _lastPosition) _lastPosition = excerpt.placementPosition + .5
+
+        _excerpts.add(excerpt.id)
+    }
+
+    fun removeExcerpt(excerptId: StoryFragmentId) {
+        _excerpts.remove(excerptId)
     }
 }

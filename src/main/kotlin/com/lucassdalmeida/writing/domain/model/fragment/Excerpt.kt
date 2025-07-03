@@ -1,7 +1,6 @@
 package com.lucassdalmeida.writing.domain.model.fragment
 
 import com.lucassdalmeida.writing.domain.model.author.AuthorId
-import com.lucassdalmeida.writing.domain.model.pack.StoryPackId
 import com.lucassdalmeida.writing.domain.model.story.StoryId
 import com.lucassdalmeida.writing.shared.Notification
 import java.time.LocalDate
@@ -11,7 +10,6 @@ class Excerpt(
     id: StoryFragmentId,
     storyId: StoryId,
     authorId: AuthorId,
-    storyPackId: StoryPackId,
     title: String,
     summary: String?,
     momentDate: LocalDate?,
@@ -19,7 +17,7 @@ class Excerpt(
     placementPosition: TimeLinePosition,
     actualPosition: TimeLinePosition? = null,
     val fileUri: String,
-) : StoryFragment(id, storyId, authorId, storyPackId, title, summary, momentDate, momentTime, placementPosition, actualPosition) {
+) : StoryFragment(id, storyId, authorId, title, summary, momentDate, momentTime, placementPosition, actualPosition) {
     override val lastPosition get() = actualPosition
 
     init {
