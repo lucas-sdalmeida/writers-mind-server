@@ -18,7 +18,7 @@ import com.lucassdalmeida.writing.domain.model.fragment.Excerpt
 import com.lucassdalmeida.writing.domain.model.fragment.StoryFragment
 import com.lucassdalmeida.writing.domain.model.fragment.TimeLinePosition
 import com.lucassdalmeida.writing.domain.model.fragment.toStoryFragmentId
-import com.lucassdalmeida.writing.domain.model.pack.toStoryPackId
+import com.lucassdalmeida.writing.domain.model.thread.toNarrativeThreadId
 import com.lucassdalmeida.writing.domain.model.story.toStoryId
 import com.lucassdalmeida.writing.domain.service.UuidGenerator
 import java.util.UUID
@@ -63,7 +63,7 @@ class AddExcerptServiceImpl(
 
     private fun RequestModel.toExcerpt(id: UUID) = Excerpt(
         id.toStoryFragmentId(),
-        storyId.toStoryId(), authorId.toAuthorId(), packId.toStoryPackId(),
+        storyId.toStoryId(), authorId.toAuthorId(), packId.toNarrativeThreadId(),
         title, summary,
         momentDate, momentTime,
         TimeLinePosition(line, x),
@@ -81,7 +81,7 @@ class AddExcerptServiceImpl(
 
     private fun StoryFragmentDto.toExcerpt() = Excerpt(
         id.toStoryFragmentId(),
-        storyId.toStoryId(), authorId.toAuthorId(), packId.toStoryPackId(),
+        storyId.toStoryId(), authorId.toAuthorId(), packId.toNarrativeThreadId(),
         title, summary,
         momentDate, momentTime,
         TimeLinePosition(placementPositionLine, placementPositionX),
@@ -91,7 +91,7 @@ class AddExcerptServiceImpl(
 
     private fun StoryFragmentDto.toChapter(excerpts: List<Excerpt>) = Chapter(
         id.toStoryFragmentId(),
-        storyId.toStoryId(), authorId.toAuthorId(), packId.toStoryPackId(),
+        storyId.toStoryId(), authorId.toAuthorId(), packId.toNarrativeThreadId(),
         title, summary,
         momentDate, momentTime,
         TimeLinePosition(placementPositionLine, placementPositionX),
