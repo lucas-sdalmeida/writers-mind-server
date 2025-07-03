@@ -5,3 +5,5 @@ import java.util.UUID
 
 @JvmInline
 value class VolumeId(val value: UUID) : Identifier
+
+fun UUID.toVolumeId() = VolumeId(this)
