@@ -2,6 +2,7 @@ package com.lucassdalmeida.writing.domain.model.fragment
 
 import com.lucassdalmeida.writing.domain.model.author.AuthorId
 import com.lucassdalmeida.writing.domain.model.story.StoryId
+import com.lucassdalmeida.writing.domain.model.thread.NarrativeThreadId
 import com.lucassdalmeida.writing.shared.Entity
 import com.lucassdalmeida.writing.shared.Notification
 import java.time.LocalDate
@@ -11,6 +12,7 @@ abstract class StoryFragment(
     id: StoryFragmentId,
     val storyId: StoryId,
     val authorId: AuthorId,
+    val narrativeThreadId: NarrativeThreadId,
     val title: String,
     summary: String?,
     val momentDate: LocalDate?,

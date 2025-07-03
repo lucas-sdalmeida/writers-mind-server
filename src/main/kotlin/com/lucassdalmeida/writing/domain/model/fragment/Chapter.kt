@@ -2,6 +2,7 @@ package com.lucassdalmeida.writing.domain.model.fragment
 
 import com.lucassdalmeida.writing.domain.model.author.AuthorId
 import com.lucassdalmeida.writing.domain.model.story.StoryId
+import com.lucassdalmeida.writing.domain.model.thread.NarrativeThreadId
 import com.lucassdalmeida.writing.shared.Notification
 import java.time.LocalDate
 import java.time.LocalTime
@@ -10,6 +11,7 @@ class Chapter private constructor(
     id: StoryFragmentId,
     storyId: StoryId,
     authorId: AuthorId,
+    narrativeThreadId: NarrativeThreadId,
     title: String,
     summary: String?,
     momentDate: LocalDate?,
@@ -19,7 +21,7 @@ class Chapter private constructor(
     excerpts: List<StoryFragmentId>,
     lastPosition: TimeLinePosition?,
 ) : StoryFragment(
-    id, storyId, authorId, title, summary, momentDate, momentTime, placementPosition, actualPosition
+    id, storyId, authorId, narrativeThreadId, title, summary, momentDate, momentTime, placementPosition, actualPosition,
 ) {
     private val _excerpts = excerpts.toMutableList()
     val excerpts get() = _excerpts.toList()
@@ -46,6 +48,7 @@ class Chapter private constructor(
         id: StoryFragmentId,
         storyId: StoryId,
         authorId: AuthorId,
+        narrativeThreadId: NarrativeThreadId,
         title: String,
         summary: String?,
         momentDate: LocalDate?,
@@ -54,7 +57,7 @@ class Chapter private constructor(
         actualPosition: TimeLinePosition?,
         excerpts: List<Excerpt>,
     ) : this(
-        id, storyId, authorId,
+        id, storyId, authorId, narrativeThreadId,
         title, summary,
         momentDate, momentTime,
         placementPosition, actualPosition,
