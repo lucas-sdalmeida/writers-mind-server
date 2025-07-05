@@ -9,6 +9,8 @@ import java.util.UUID
 interface AddExcerptService {
     fun add(request: RequestModel): ResponseModel
 
+    fun addToChapter(chapterId: UUID, request: RequestModel): ResponseModel
+
     data class RequestModel(
         val storyId: UUID,
         val authorId: UUID,

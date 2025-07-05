@@ -17,6 +17,7 @@ import com.lucassdalmeida.writing.application.story.repository.toStory
 import com.lucassdalmeida.writing.application.thread.repository.NarrativeThreadRepository
 import com.lucassdalmeida.writing.application.thread.repository.toEntity
 import com.lucassdalmeida.writing.domain.model.author.toAuthorId
+import com.lucassdalmeida.writing.domain.model.fragment.Chapter
 import com.lucassdalmeida.writing.domain.model.fragment.Excerpt
 import com.lucassdalmeida.writing.domain.model.fragment.TimeLinePosition
 import com.lucassdalmeida.writing.domain.model.fragment.toStoryFragmentId
@@ -104,5 +105,42 @@ class AddExcerptServiceImpl(
 
         val line = lines.keys.max() + 1
         excerpt.apply { placementPosition = placementPosition.copy(line = line) }
+    }
+
+    override fun addToChapter(chapterId: UUID, request: RequestModel): ResponseModel {
+        val (storyId, authorId, narrativeThreadId) = request
+        checkPreconditions(storyId, authorId)
+
+        val narrativeThread = fetchNarrativeThread(narrativeThreadId)
+        val chapter = fetchChapter(chapterId)
+
+        val id = uuidGenerator.randomUuid()
+        val excerpt = request.toExcerpt(id)
+        calculateLine(excerpt, request)
+        chapter.addExcerpt(excerpt)
+
+        storyFragmentRepository.save(excerpt.toDto())
+        storyFragmentRepository.save(chapter.toDto())
+        saveFileService.save(request.content)
+
+        return ResponseModel(
+            id,
+            storyId,
+            narrativeThreadId,
+            if (narrativeThread is VolumeThread) narrativeThread.volumeId.value else null,
+            if (narrativeThread is CharacterBiographyThread) narrativeThread.characterId.value else null,
+            chapterId,
+            excerpt.title,
+            "excerpt",
+            TimelinePositionDto(excerpt.actualPosition.line, excerpt.actualPosition.x),
+        )
+    }
+
+    private fun fetchChapter(chapterId: UUID): Chapter {
+        val fragment = storyFragmentRepository.findById(chapterId)
+            ?.toEntity()
+            ?: throw EntityNotFoundException("There is not chapter with id $chapterId")
+        require(fragment is Chapter) { "Fragment of id $chapterId is not a chapter" }
+        return fragment
     }
 }
