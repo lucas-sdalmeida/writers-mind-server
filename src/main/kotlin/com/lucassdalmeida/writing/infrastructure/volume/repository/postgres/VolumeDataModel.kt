@@ -2,9 +2,9 @@ package com.lucassdalmeida.writing.infrastructure.volume.repository.postgres
 
 import com.lucassdalmeida.writing.application.volume.repository.VolumeDto
 import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import jakarta.persistence.Table
-import org.springframework.data.annotation.Id
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table(name = "volume")

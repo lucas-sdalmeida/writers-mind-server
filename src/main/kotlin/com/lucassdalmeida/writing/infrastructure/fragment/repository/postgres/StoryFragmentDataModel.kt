@@ -2,9 +2,9 @@ package com.lucassdalmeida.writing.infrastructure.fragment.repository.postgres
 
 import com.lucassdalmeida.writing.application.fragments.repository.StoryFragmentDto
 import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import org.springframework.data.annotation.Id
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
