@@ -14,7 +14,7 @@ data class AuthorDataModel(
     @Id val id: UUID,
     val name: String,
     val pseudonym: String?,
-    @OneToOne(targetEntity = UserAccountDataModel::class) val accountId: UUID,
+    val accountId: UUID,
 )
 
 fun AuthorDto.toDataModel() = AuthorDataModel(id, name, pseudonym, accountId)

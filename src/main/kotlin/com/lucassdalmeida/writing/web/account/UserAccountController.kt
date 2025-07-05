@@ -15,10 +15,18 @@ class UserAccountController(
     private val signUpService: SignUpService,
 ) {
     @PostMapping("/signup")
-    fun signUp(@RequestBody body: SignUpService.RequestModel): ResponseEntity<*> {
-        val id = signUpService.signUp(body)
+    fun signUp(@RequestBody body: SignUpRequest): ResponseEntity<*> {
+        val (name, pseudonym, email, password) = body
+        val id = signUpService.signUp(SignUpService.RequestModel(name, pseudonym, email, password))
         return ResponseEntity.status(HttpStatus.CREATED).body(SignUpAndLoginResponse(id))
     }
+
+    data class SignUpRequest(
+        val name: String,
+        val pseudonym: String?,
+        val email: String,
+        val password: String,
+    )
 
     data class SignUpAndLoginResponse(val accountId: UUID)
 

@@ -25,7 +25,7 @@ data class StoryFragmentDataModel(
     val actualPositionLine: Int,
     val actualPositionX: Double,
     val fileUri: String?,
-    @ManyToOne(targetEntity = StoryFragmentDataModel::class) val chapterId: UUID?,
+    val chapterId: UUID?,
     val chapterLastPositionLine: Int?,
     val chapterLastPositionX: Double?,
 )

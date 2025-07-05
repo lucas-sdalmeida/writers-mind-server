@@ -31,7 +31,8 @@ class SignUpServiceImpl(
         val password = passwordEncoder.encode(request.plainPassword)
 
         val account = UserAccount(id.toUserAccountId(), request.email, password)
-        val author = Author(id.toAuthorId(), request.name, request.pseudonym, account.id)
+        val pseudonym = if (request.pseudonym.isNullOrBlank()) null else request.pseudonym
+        val author = Author(id.toAuthorId(), request.name, pseudonym, account.id)
 
         accountRepository.save(account.toDto())
         authorRepository.save(author.toDto())
