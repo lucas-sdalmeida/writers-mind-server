@@ -56,6 +56,7 @@ class AddExcerptServiceImpl(
             if (narrativeThread is CharacterBiographyThread) narrativeThread.characterId.value else null,
             null,
             excerpt.title,
+            "excerpt",
             TimelinePositionDto(excerpt.actualPosition.line, excerpt.actualPosition.x),
         )
     }

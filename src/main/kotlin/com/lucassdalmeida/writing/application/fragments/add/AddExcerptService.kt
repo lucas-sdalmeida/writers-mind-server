@@ -29,6 +29,7 @@ interface AddExcerptService {
         val characterId: UUID?,
         val chapterId: UUID?,
         val title: String,
+        val type: String,
         val actualPosition: TimelinePositionDto
     )
 
