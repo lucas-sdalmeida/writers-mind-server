@@ -24,11 +24,8 @@ abstract class StoryFragment(
 
     var placementPosition = placementPosition
         set(value) {
-            if (field == actualPosition) actualPosition = value
-
-            if (value.line != actualPosition.line) actualPosition = actualPosition.copy(line = value.line)
-            if (value.line != lastPosition.line) lastPosition = lastPosition.copy(line = value.line)
-
+            actualPosition = value
+            lastPosition = value
             field = value
         }
     var actualPosition = actualPosition ?: placementPosition

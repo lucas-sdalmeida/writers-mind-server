@@ -23,7 +23,8 @@ class Excerpt(
 ) : StoryFragment(
     id, storyId, authorId, narrativeThreadId, title, summary, momentDate, momentTime, placementPosition, actualPosition,
 ) {
-    override val lastPosition get() = actualPosition
+    override var lastPosition get() = actualPosition
+        set(value) {}
 
     init {
         val notification = validate()

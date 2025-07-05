@@ -25,7 +25,7 @@ class Chapter(
     private var _lastPosition = lastPosition ?: (placementPosition + 3.0)
     override var  lastPosition
         get() = _lastPosition
-        set(value) = run { _lastPosition = value }
+        set(value) = run { _lastPosition = value + (_lastPosition.x - placementPosition.x) }
 
     fun addExcerpt(excerpt: Excerpt) {
         require(excerpt.placementPosition.line == placementPosition.line) {
