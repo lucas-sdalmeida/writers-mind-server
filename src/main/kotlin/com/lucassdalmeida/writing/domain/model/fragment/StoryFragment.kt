@@ -12,7 +12,7 @@ abstract class StoryFragment(
     id: StoryFragmentId,
     val storyId: StoryId,
     val authorId: AuthorId,
-    val narrativeThreadId: NarrativeThreadId?,
+    var narrativeThreadId: NarrativeThreadId?,
     val title: String,
     summary: String?,
     val momentDate: LocalDate?,
