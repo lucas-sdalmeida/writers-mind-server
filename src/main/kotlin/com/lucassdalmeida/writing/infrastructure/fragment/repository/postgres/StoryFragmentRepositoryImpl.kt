@@ -3,6 +3,7 @@ package com.lucassdalmeida.writing.infrastructure.fragment.repository.postgres
 import com.lucassdalmeida.writing.application.fragments.repository.StoryFragmentDto
 import com.lucassdalmeida.writing.application.fragments.repository.StoryFragmentRepository
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 class StoryFragmentRepositoryImpl(
     private val innerRepository: StoryFragmentPostgresRepository,
@@ -10,6 +11,11 @@ class StoryFragmentRepositoryImpl(
     override fun save(dto: StoryFragmentDto) {
         innerRepository.save(dto.toDataModel())
     }
+
+    override fun findById(id: UUID) = innerRepository
+        .findById(id)
+        .getOrNull()
+        ?.toDto()
 
     override fun findAllByNarrativeThreadId(threadId: UUID?) = innerRepository
         .findAllByNarrativeThreadId(threadId)
