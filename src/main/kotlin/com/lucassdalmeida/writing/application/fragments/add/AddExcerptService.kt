@@ -11,17 +11,18 @@ interface AddExcerptService {
     data class RequestModel(
         val storyId: UUID,
         val authorId: UUID,
+        val narrativeThreadId: UUID?,
         val title: String,
         val summary: String?,
         val momentDate: LocalDate?,
         val momentTime: LocalTime?,
-        val narrativeThreadId: UUID?,
         val line: Int,
         val x: Double,
         val content: File,
     )
 
     data class ResponseModel(
+        val id: UUID,
         val storyId: UUID,
         val narrativeThreadId: UUID?,
         val volumeId: UUID?,
