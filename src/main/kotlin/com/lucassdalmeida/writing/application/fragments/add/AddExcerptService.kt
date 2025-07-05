@@ -6,7 +6,7 @@ import java.time.LocalTime
 import java.util.UUID
 
 interface AddExcerptService {
-    fun add(request: RequestModel): UUID
+    fun add(request: RequestModel): ResponseModel
 
     data class RequestModel(
         val storyId: UUID,
@@ -15,9 +15,21 @@ interface AddExcerptService {
         val summary: String?,
         val momentDate: LocalDate?,
         val momentTime: LocalTime?,
-        val packId: UUID?,
+        val narrativeThreadId: UUID?,
         val line: Int,
         val x: Double,
         val content: File,
     )
+
+    data class ResponseModel(
+        val storyId: UUID,
+        val narrativeThreadId: UUID?,
+        val volumeId: UUID?,
+        val characterId: UUID?,
+        val chapterId: UUID?,
+        val title: String,
+        val actualPosition: TimelinePositionDto
+    )
+
+    data class TimelinePositionDto(val line: Int, val x: Double)
 }

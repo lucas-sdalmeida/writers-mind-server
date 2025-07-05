@@ -17,8 +17,9 @@ class Excerpt(
     momentDate: LocalDate?,
     momentTime: LocalTime?,
     placementPosition: TimeLinePosition,
-    actualPosition: TimeLinePosition? = null,
     val fileUri: String,
+    actualPosition: TimeLinePosition? = null,
+    val chapterId: StoryFragmentId? = null,
 ) : StoryFragment(
     id, storyId, authorId, narrativeThreadId, title, summary, momentDate, momentTime, placementPosition, actualPosition,
 ) {
