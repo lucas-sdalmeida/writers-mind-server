@@ -2,6 +2,7 @@ package com.lucassdalmeida.writing.infrastructure.fragment.repository.postgres
 
 import com.lucassdalmeida.writing.application.fragments.repository.StoryFragmentDto
 import jakarta.persistence.Entity
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.springframework.data.annotation.Id
 import java.time.LocalDate
@@ -24,7 +25,9 @@ data class StoryFragmentDataModel(
     val actualPositionLine: Int,
     val actualPositionX: Double,
     val fileUri: String?,
-    val excerpts: List<UUID>?,
+    @ManyToOne(targetEntity = StoryFragmentDataModel::class) val chapterId: UUID?,
+    val chapterLastPositionLine: Int?,
+    val chapterLastPositionX: Double?,
 )
 
 fun StoryFragmentDto.toDataModel() = StoryFragmentDataModel(
@@ -33,7 +36,8 @@ fun StoryFragmentDto.toDataModel() = StoryFragmentDataModel(
     momentDate, momentTime,
     placementPositionLine, placementPositionX,
     actualPositionLine, actualPositionX,
-    fileUri, excerpts,
+    fileUri, chapterId,
+    chapterLastPositionLine, chapterLastPositionX,
 )
 
 fun StoryFragmentDataModel.toDto() = StoryFragmentDto(
@@ -42,5 +46,6 @@ fun StoryFragmentDataModel.toDto() = StoryFragmentDto(
     momentDate, momentTime,
     placementPositionLine, placementPositionX,
     actualPositionLine, actualPositionX,
-    fileUri, excerpts,
+    fileUri, chapterId,
+    chapterLastPositionLine, chapterLastPositionX,
 )
