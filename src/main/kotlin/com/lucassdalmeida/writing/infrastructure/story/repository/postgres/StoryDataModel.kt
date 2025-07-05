@@ -20,7 +20,7 @@ data class StoryDataModel(
     val setting: String?,
     val summary: String?,
     val coverImageUri: String?,
-    @ManyToOne(targetEntity = AuthorDataModel::class) val authorId: UUID
+    val authorId: UUID
 ) {
     fun toDto() =
         StoryDto(id, title, themes, objectives, mainPlot, genres, setting, summary, coverImageUri, authorId)

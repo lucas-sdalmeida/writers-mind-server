@@ -20,4 +20,8 @@ class StoryRepositoryImpl(private val postgresRepository: StoryPostgresRepositor
     override fun findAll() = postgresRepository
         .findAll()
         .map { it.toDto() }
+
+    override fun findAllByAuthorId(authorId: UUID) = postgresRepository
+        .findAllByAuthorId(authorId)
+        .map { it.toDto() }
 }

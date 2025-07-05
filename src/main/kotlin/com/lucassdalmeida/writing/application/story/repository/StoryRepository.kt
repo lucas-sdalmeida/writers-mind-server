@@ -8,4 +8,6 @@ interface StoryRepository {
     fun findById(id: UUID): StoryDto?
 
     fun findAll(): List<StoryDto>
+
+    fun findAllByAuthorId(authorId: UUID): List<StoryDto>
 }

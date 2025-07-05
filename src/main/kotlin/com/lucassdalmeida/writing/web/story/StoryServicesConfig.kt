@@ -23,8 +23,8 @@ class StoryServicesConfig {
         CreateStoryServiceImpl(repository, authorRepository, uuidGenerator)
 
     @Bean
-    fun findOneStoryService(repository: StoryRepository): FindOneStoryService =
-        FindOneStoryServiceImpl(repository)
+    fun findOneStoryService(repository: StoryRepository, authorRepository: AuthorRepository): FindOneStoryService =
+        FindOneStoryServiceImpl(repository, authorRepository)
 
     @Bean
     fun findAllStoryService(repository: StoryRepository): FindAllStoriesService =

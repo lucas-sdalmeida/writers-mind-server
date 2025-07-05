@@ -14,6 +14,11 @@ class AuthorRepositoryImpl(
         innerRepository.save(dto.toDataModel())
     }
 
+    override fun findById(id: UUID) = innerRepository
+        .findById(id)
+        .getOrNull()
+        ?.toDto()
+
     override fun findByAccountId(accountId: UUID) = innerRepository
         .findByAccountId(accountId)
         .getOrNull()

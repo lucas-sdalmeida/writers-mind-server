@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
+import kotlin.String
 
 @RestController
-@RequestMapping("/story")
+@RequestMapping("/author/{authorId}/story")
 @CrossOrigin
 class StoryController(
     private val createStoryService: CreateStoryService,
@@ -25,25 +26,43 @@ class StoryController(
     private val findAllStoryService: FindAllStoriesService,
 ) {
     @PostMapping
-    fun postStory(@RequestBody request: CreateRequest): ResponseEntity<*> {
-        val id = createStoryService.create(request)
+    fun postStory(@PathVariable authorId: UUID, @RequestBody request: PostRequest): ResponseEntity<*> {
+        val id = createStoryService.create(request.toCreateRequest(authorId))
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(PostResponse(id))
     }
+    
+    private fun PostRequest.toCreateRequest(authorId: UUID) = CreateRequest(
+        title,
+        themes, objectives, mainPlot, genres, setting,
+        summary,
+        coverImageUri,
+        authorId,
+    )
 
     @GetMapping("{storyId}")
-    fun getOneStory(@PathVariable storyId: UUID): ResponseEntity<*> {
-        val story = findOneStoryService.findById(storyId)
-        if (story == null) return ResponseEntity.notFound().build<Any>()
+    fun getOneStory(@PathVariable authorId: UUID, @PathVariable storyId: UUID): ResponseEntity<*> {
+        val story = findOneStoryService.findById(storyId, authorId)
         return ResponseEntity.ok(story)
     }
 
     @GetMapping
-    fun getAllStories(): ResponseEntity<*> {
-        val stories = findAllStoryService.findAll()
+    fun getAllStories(@PathVariable authorId: UUID): ResponseEntity<*> {
+        val stories = findAllStoryService.findAllByAuthorId(authorId)
         return ResponseEntity.ok(GetAllResponse(stories))
     }
 
+    data class PostRequest(
+        val title: String,
+        val themes: String?,
+        val objectives: String?,
+        val mainPlot: String?,
+        val genres: String?,
+        val setting: String?,
+        val summary: String?,
+        val coverImageUri: String?,
+    )
+    
     private data class PostResponse(val storyId: UUID)
 
     private data class GetAllResponse(val stories: List<StoryDto>)
