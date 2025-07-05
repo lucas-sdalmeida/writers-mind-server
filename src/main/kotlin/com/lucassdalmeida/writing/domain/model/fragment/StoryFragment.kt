@@ -25,13 +25,17 @@ abstract class StoryFragment(
     var placementPosition = placementPosition
         set(value) {
             if (field == actualPosition) actualPosition = value
+
             if (value.line != actualPosition.line) actualPosition = actualPosition.copy(line = value.line)
+            if (value.line != lastPosition.line) lastPosition = lastPosition.copy(line = value.line)
+
             field = value
         }
     var actualPosition = actualPosition ?: placementPosition
         private set
 
-    abstract val lastPosition: TimeLinePosition
+    abstract var lastPosition: TimeLinePosition
+        protected set
 
     init {
         val notification = validate()

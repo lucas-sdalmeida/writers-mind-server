@@ -23,7 +23,9 @@ class Chapter(
     id, storyId, authorId, narrativeThreadId, title, summary, momentDate, momentTime, placementPosition, actualPosition,
 ) {
     private var _lastPosition = lastPosition ?: (placementPosition + 3.0)
-    override val lastPosition get() = _lastPosition
+    override var  lastPosition
+        get() = _lastPosition
+        set(value) = run { _lastPosition = value }
 
     fun addExcerpt(excerpt: Excerpt) {
         require(excerpt.placementPosition.line == placementPosition.line) {
