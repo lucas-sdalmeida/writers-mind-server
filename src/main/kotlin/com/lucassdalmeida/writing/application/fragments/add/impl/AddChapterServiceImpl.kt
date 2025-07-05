@@ -124,6 +124,7 @@ class AddChapterServiceImpl(
         if (narrativeThread is CharacterBiographyThread) narrativeThread.characterId.value else null,
         title, "chapter",
         TimelinePositionDto(actualPosition.line, actualPosition.x),
+        lastPosition.x - actualPosition.x,
     )
 
     private fun Excerpt.toExcerptDto(narrativeThread: NarrativeThread?) = ExcerptDto(

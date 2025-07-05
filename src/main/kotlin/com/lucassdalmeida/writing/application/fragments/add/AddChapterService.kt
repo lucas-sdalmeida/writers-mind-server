@@ -38,6 +38,7 @@ interface AddChapterService {
         val title: String,
         val type: String,
         val actualPosition: TimelinePositionDto,
+        val width: Double,
     )
 
     data class ExcerptDto(
