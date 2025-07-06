@@ -6,6 +6,8 @@ import com.lucassdalmeida.writing.application.fragments.add.AddExcerptService
 import com.lucassdalmeida.writing.application.fragments.add.impl.AddChapterServiceImpl
 import com.lucassdalmeida.writing.application.fragments.add.impl.AddExcerptServiceImpl
 import com.lucassdalmeida.writing.application.fragments.file.SaveFileService
+import com.lucassdalmeida.writing.application.fragments.find.FindFragmentService
+import com.lucassdalmeida.writing.application.fragments.find.impl.FindFragmentServiceImpl
 import com.lucassdalmeida.writing.application.fragments.repository.StoryFragmentRepository
 import com.lucassdalmeida.writing.application.story.repository.StoryRepository
 import com.lucassdalmeida.writing.application.thread.repository.NarrativeThreadRepository
@@ -48,4 +50,10 @@ class StoryFragmentServicesConfiguration {
         saveFileService,
         uuidGenerator,
     )
+
+    @Bean
+    fun findFragmentService(
+        storyFragmentRepository: StoryFragmentRepository,
+        narrativeThreadRepository: NarrativeThreadRepository,
+    ): FindFragmentService = FindFragmentServiceImpl(storyFragmentRepository, narrativeThreadRepository)
 }

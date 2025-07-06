@@ -25,6 +25,7 @@ data class LinePreferences(val name: String, val color: String)
 
 data class Point(
     val id: UUID,
+    val storyId: UUID,
     val narrativeThreadId: UUID?,
     val volumeId: UUID?,
     val characterId: UUID?,

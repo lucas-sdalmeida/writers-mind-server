@@ -61,6 +61,7 @@ class FindTimelineServiceImpl(
 
     private fun StoryFragment.toPointDto(thread: NarrativeThread?) = Point(
         id.value,
+        storyId.value,
         narrativeThreadId?.value,
         if (thread is VolumeThread) thread.volumeId.value else null,
         if (thread is CharacterBiographyThread) thread.characterId.value else null,

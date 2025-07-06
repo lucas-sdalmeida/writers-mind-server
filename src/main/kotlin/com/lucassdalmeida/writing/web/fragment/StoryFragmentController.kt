@@ -2,19 +2,14 @@ package com.lucassdalmeida.writing.web.fragment
 
 import com.lucassdalmeida.writing.application.fragments.add.AddChapterService
 import com.lucassdalmeida.writing.application.fragments.add.AddExcerptService
-import org.apache.coyote.Response
+import com.lucassdalmeida.writing.application.fragments.find.FindFragmentService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/author/{authorId}/story/{storyId}/timeline")
@@ -22,6 +17,7 @@ import java.util.UUID
 class StoryFragmentController(
     private val addExcerptService: AddExcerptService,
     private val addChapterService: AddChapterService,
+    private val findFragmentService: FindFragmentService,
 ) {
     @PostMapping("fragment")
     fun postFragment(
@@ -65,6 +61,16 @@ class StoryFragmentController(
         excerptTitle, excerptSummary,
         File("./"),
     )
+
+    @GetMapping("fragment/{fragmentId}")
+    fun getFragment(
+        @PathVariable authorId: UUID,
+        @PathVariable storyId: UUID,
+        @PathVariable fragmentId: UUID,
+    ): ResponseEntity<*> {
+        val response = findFragmentService.findById(fragmentId)
+        return ResponseEntity.ok(response)
+    }
 
     data class PostFragmentRequest(
         val narrativeThreadId: UUID?,
