@@ -40,6 +40,17 @@ class StoryFragmentController(
         File("./"),
     )
 
+    @PostMapping("chapter/{chapterId}/fragment")
+    fun postFragmentToChapter(
+        @PathVariable authorId: UUID,
+        @PathVariable storyId: UUID,
+        @PathVariable chapterId: UUID,
+        @RequestBody body: PostFragmentRequest,
+    ): ResponseEntity<*> {
+        val point = addExcerptService.addToChapter(chapterId, body.toAddExcerptRequest(authorId, storyId))
+        return ResponseEntity.status(HttpStatus.CREATED).body(point)
+    }
+
     @PostMapping("chapter")
     fun postChapter(
         @PathVariable authorId: UUID,

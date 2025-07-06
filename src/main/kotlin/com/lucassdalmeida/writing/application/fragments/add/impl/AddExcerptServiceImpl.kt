@@ -19,6 +19,7 @@ import com.lucassdalmeida.writing.application.thread.repository.toEntity
 import com.lucassdalmeida.writing.domain.model.author.toAuthorId
 import com.lucassdalmeida.writing.domain.model.fragment.Chapter
 import com.lucassdalmeida.writing.domain.model.fragment.Excerpt
+import com.lucassdalmeida.writing.domain.model.fragment.StoryFragment
 import com.lucassdalmeida.writing.domain.model.fragment.TimeLinePosition
 import com.lucassdalmeida.writing.domain.model.fragment.toStoryFragmentId
 import com.lucassdalmeida.writing.domain.model.story.toStoryId
@@ -89,7 +90,7 @@ class AddExcerptServiceImpl(
         content.absolutePath,
     )
 
-    private fun calculateLine(excerpt: Excerpt, request: RequestModel) {
+    private fun calculateLine(excerpt: StoryFragment, request: RequestModel) {
         val lines = storyFragmentRepository.findAllByNarrativeThreadId(request.narrativeThreadId)
             .map { it.toEntity() }
             .groupBy { it.actualPosition.line }
@@ -97,7 +98,7 @@ class AddExcerptServiceImpl(
             excerpt.apply { placementPosition = placementPosition.copy(line = 0) }
             return
         }
-        if (lines[excerpt.actualPosition.line]?.none { it.isNear(excerpt) } == true) {
+        if (lines[excerpt.actualPosition.line]?.none { areColliding(it, excerpt) } == true) {
             return
         }
 
@@ -112,6 +113,16 @@ class AddExcerptServiceImpl(
         excerpt.apply { placementPosition = placementPosition.copy(line = line) }
     }
 
+    private fun areColliding(fragment: StoryFragment, other: StoryFragment): Boolean {
+        if (fragment == other)
+            return false
+        if (fragment is Chapter && other is Excerpt && fragment.id == other.chapterId)
+            return false
+        if (fragment is Excerpt && other is Chapter && fragment.chapterId == other.id)
+            return false
+        return fragment.isNear(other)
+    }
+
     override fun addToChapter(chapterId: UUID, request: RequestModel): ResponseModel {
         val (storyId, authorId, narrativeThreadId) = request
         checkPreconditions(storyId, authorId)
@@ -121,8 +132,11 @@ class AddExcerptServiceImpl(
 
         val id = uuidGenerator.randomUuid()
         val excerpt = request.toExcerpt(id)
-        calculateLine(excerpt, request)
+
+        excerpt.chapterId = chapter.id
         chapter.addExcerpt(excerpt)
+
+        calculateLine(chapter, request)
 
         storyFragmentRepository.save(excerpt.toDto())
         storyFragmentRepository.save(chapter.toDto())
