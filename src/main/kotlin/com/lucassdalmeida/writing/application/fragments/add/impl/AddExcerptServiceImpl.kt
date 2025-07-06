@@ -106,12 +106,14 @@ class AddExcerptServiceImpl(
 
         for ((line, points) in lines) {
             if (line == excerpt.actualPosition.line) continue
-            if (points.any { it.isNear(excerpt) }) continue
+
             excerpt.apply { placementPosition = placementPosition.copy(line = line) }
+            if (points.any { areColliding(it, excerpt) }) continue
+
             return
         }
 
-        val line = (lines.keys.maxOrNull() ?: 0) + 1
+        val line = lines.size + 1
         excerpt.apply { placementPosition = placementPosition.copy(line = line) }
     }
 

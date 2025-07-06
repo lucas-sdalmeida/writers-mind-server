@@ -106,8 +106,10 @@ class AddChapterServiceImpl(
 
         for ((line, points) in lines) {
             if (line == fragment.actualPosition.line) continue
-            if (points.any { it.isNear(fragment) }) continue
+
             fragment.apply { placementPosition = placementPosition.copy(line = line) }
+            if (points.any { it.isNear(fragment) }) continue
+
             return
         }
 

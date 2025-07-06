@@ -47,7 +47,7 @@ class MoveFragmentServiceImpl(
 
         val movedFragments = mutableListOf(fragment)
         if (fragment is Chapter)
-            movedFragments.addAll(updateChapterFragments(fragment.id, chapterOldLine, request, lines))
+            movedFragments.addAll(updateChapterFragments(fragment, chapterOldLine, request, lines))
 
         movedFragments.forEach {
             storyFragmentRepository.save(it.toDto())
@@ -76,8 +76,10 @@ class MoveFragmentServiceImpl(
 
         for ((line, points) in lines) {
             if (line == fragment.actualPosition.line) continue
-            if (points.any { it.isNear(fragment) }) continue
+
             fragment.apply { placementPosition = placementPosition.copy(line = line) }
+            if (points.any { areColliding(it, fragment) }) continue
+
             return
         }
 
@@ -86,17 +88,20 @@ class MoveFragmentServiceImpl(
     }
 
     private fun updateChapterFragments(
-        chapterId: StoryFragmentId,
+        chapter: Chapter,
         chapterOldLine: Int,
         request: RequestModel,
         lines: Map<Int, List<StoryFragment>>,
     ): List<StoryFragment> {
         return lines[chapterOldLine]!!
-            .filter { it is Excerpt && it.chapterId == chapterId }
+            .filter { it is Excerpt && it.chapterId == chapter.id }
             .map {
                 it.apply {
                     narrativeThreadId = request.narrativeThreadId?.toNarrativeThreadId()
-                    placementPosition = TimeLinePosition(request.line, placementPosition.x + request.deltaX)
+                    placementPosition = TimeLinePosition(
+                        chapter.actualPosition.line,
+                        placementPosition.x + request.deltaX
+                    )
                 }
             }
     }
