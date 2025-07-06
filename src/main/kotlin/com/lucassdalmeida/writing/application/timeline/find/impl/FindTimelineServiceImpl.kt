@@ -42,12 +42,15 @@ class FindTimelineServiceImpl(
             .groupBy { it.actualPosition.line }
             .map { (line, points) -> Line(line, getLinePreferences(line, null), points) }
             .sortedBy { it.index }
-        val unboundedPointsThread =
-            NarrativeThreadDto(null, null, null, null, unboundedPoints)
+        val unboundedPointsThread = NarrativeThreadDto(
+                null, null, null, null,
+            unboundedPoints.ifEmpty { listOf(getDefaultLine()) }
+            )
 
         val narrativeThreadsDtos = threads.map { it.toTimelineThreadDto() }
 
         return TimelineDto(
+            story.id.value,
             story.toTimelineStoryDto(),
             mutableListOf<NarrativeThreadDto>().also {
                 it.add(unboundedPointsThread)
@@ -79,8 +82,11 @@ class FindTimelineServiceImpl(
             }
         }
 
-        return LinePreferences("linha $line", color)
+        return LinePreferences("linha ${line + 1}", color)
     }
+
+    private fun getDefaultLine() =
+        Line(0, getLinePreferences(0, null), listOf())
 
     private fun NarrativeThread.toTimelineThreadDto(): NarrativeThreadDto {
         val points = storyFragmentRepository

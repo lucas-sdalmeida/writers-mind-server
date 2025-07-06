@@ -3,7 +3,7 @@ package com.lucassdalmeida.writing.application.timeline.find
 import com.lucassdalmeida.writing.application.fragments.repository.TimelinePositionDto
 import java.util.*
 
-data class TimelineDto(val storyDto: StoryDto, val narrativeThreads: List<NarrativeThreadDto>)
+data class TimelineDto(val id: UUID, val story: StoryDto, val narrativeThreads: List<NarrativeThreadDto>)
 
 data class StoryDto(val id: UUID, val title: String)
 

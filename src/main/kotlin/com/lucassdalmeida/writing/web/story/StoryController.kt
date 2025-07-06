@@ -5,6 +5,7 @@ import com.lucassdalmeida.writing.application.story.create.CreateStoryService.Re
 import com.lucassdalmeida.writing.application.story.find.FindAllStoriesService
 import com.lucassdalmeida.writing.application.story.find.FindOneStoryService
 import com.lucassdalmeida.writing.application.story.repository.StoryDto
+import com.lucassdalmeida.writing.application.timeline.find.FindTimelineService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -24,6 +25,7 @@ class StoryController(
     private val createStoryService: CreateStoryService,
     private val findOneStoryService: FindOneStoryService,
     private val findAllStoryService: FindAllStoriesService,
+    private val findTimelineService: FindTimelineService,
 ) {
     @PostMapping
     fun postStory(@PathVariable authorId: UUID, @RequestBody request: PostRequest): ResponseEntity<*> {
@@ -50,6 +52,12 @@ class StoryController(
     fun getAllStories(@PathVariable authorId: UUID): ResponseEntity<*> {
         val stories = findAllStoryService.findAllByAuthorId(authorId)
         return ResponseEntity.ok(GetAllResponse(stories))
+    }
+
+    @GetMapping("{storyId}/timeline")
+    fun getTimeline(@PathVariable authorId: UUID, @PathVariable storyId: UUID): ResponseEntity<*> {
+        val timeline = findTimelineService.findByStoryId(storyId)
+        return ResponseEntity.ok(timeline)
     }
 
     data class PostRequest(

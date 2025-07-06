@@ -2,9 +2,11 @@ package com.lucassdalmeida.writing.infrastructure.thread.repository.postgres
 
 import com.lucassdalmeida.writing.application.thread.repository.NarrativeThreadDto
 import com.lucassdalmeida.writing.application.thread.repository.NarrativeThreadRepository
+import org.springframework.stereotype.Repository
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
+@Repository
 class NarrativeThreadRepositoryImpl(
     private val innerRepository: NarrativeThreadPostgresRepository,
 ): NarrativeThreadRepository {
