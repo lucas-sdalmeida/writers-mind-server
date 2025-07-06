@@ -63,7 +63,7 @@ class AddExcerptServiceImpl(
     }
 
     private fun checkPreconditions(storyId: UUID, authorId: UUID) {
-        if (authorRepository.existsById(authorId))
+        if (!authorRepository.existsById(authorId))
             throw UnauthenticatedUserException("Unable to create the excerpt because user $authorId does not exist!")
         val story = storyRepository.findById(storyId)
             ?.toStory()
@@ -93,8 +93,13 @@ class AddExcerptServiceImpl(
         val lines = storyFragmentRepository.findAllByNarrativeThreadId(request.narrativeThreadId)
             .map { it.toEntity() }
             .groupBy { it.actualPosition.line }
-        if (lines[excerpt.actualPosition.line]?.none { it.isNear(excerpt) } == true)
+        if (lines.isEmpty()) {
+            excerpt.apply { placementPosition = placementPosition.copy(line = 0) }
             return
+        }
+        if (lines[excerpt.actualPosition.line]?.none { it.isNear(excerpt) } == true) {
+            return
+        }
 
         for ((line, points) in lines) {
             if (line == excerpt.actualPosition.line) continue
@@ -103,7 +108,7 @@ class AddExcerptServiceImpl(
             return
         }
 
-        val line = lines.keys.max() + 1
+        val line = (lines.keys.maxOrNull() ?: 0) + 1
         excerpt.apply { placementPosition = placementPosition.copy(line = line) }
     }
 
