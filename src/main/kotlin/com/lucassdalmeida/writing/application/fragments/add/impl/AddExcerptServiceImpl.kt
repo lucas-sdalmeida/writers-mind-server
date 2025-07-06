@@ -98,6 +98,8 @@ class AddExcerptServiceImpl(
             excerpt.apply { placementPosition = placementPosition.copy(line = 0) }
             return
         }
+        if (lines[excerpt.actualPosition.line] == null)
+            return
         if (lines[excerpt.actualPosition.line]?.none { areColliding(it, excerpt) } == true) {
             return
         }

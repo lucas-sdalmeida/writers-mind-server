@@ -98,6 +98,8 @@ class AddChapterServiceImpl(
             fragment.apply { placementPosition = placementPosition.copy(line = 0) }
             return
         }
+        if (lines[fragment.actualPosition.line] == null)
+            return
         if (lines[fragment.actualPosition.line]?.none { it.isNear(fragment) } == true) {
             return
         }
