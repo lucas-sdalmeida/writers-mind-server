@@ -1,5 +1,6 @@
 package com.lucassdalmeida.writing.web.fragment
 
+import com.lucassdalmeida.writing.application.fragments.add.AddChapterService
 import com.lucassdalmeida.writing.application.fragments.add.AddExcerptService
 import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
@@ -18,7 +19,10 @@ import java.util.UUID
 @RestController
 @RequestMapping("/author/{authorId}/story/{storyId}/timeline")
 @CrossOrigin
-class StoryFragmentController(private val addExcerptService: AddExcerptService) {
+class StoryFragmentController(
+    private val addExcerptService: AddExcerptService,
+    private val addChapterService: AddChapterService,
+) {
     @PostMapping("fragment")
     fun postFragment(
         @PathVariable authorId: UUID,
@@ -40,6 +44,28 @@ class StoryFragmentController(private val addExcerptService: AddExcerptService) 
         File("./"),
     )
 
+    @PostMapping("chapter")
+    fun postChapter(
+        @PathVariable authorId: UUID,
+        @PathVariable storyId: UUID,
+        @RequestBody body: PostChapterRequest,
+    ): ResponseEntity<*> {
+        val response = addChapterService.add(body.toAddChapterRequest(authorId, storyId))
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+    }
+
+    private fun PostChapterRequest.toAddChapterRequest(
+        authorId: UUID,
+        storyId: UUID,
+    ) = AddChapterService.RequestModel(
+        storyId, authorId, narrativeThreadId,
+        title, summary,
+        momentDate, momentTime,
+        line, x,
+        excerptTitle, excerptSummary,
+        File("./"),
+    )
+
     data class PostFragmentRequest(
         val narrativeThreadId: UUID?,
         val title: String,
@@ -48,6 +74,19 @@ class StoryFragmentController(private val addExcerptService: AddExcerptService) 
         val momentTime: LocalTime?,
         val line: Int,
         val x: Double,
+        val content: String?,
+    )
+
+    data class PostChapterRequest(
+        val narrativeThreadId: UUID?,
+        val title: String,
+        val summary: String?,
+        val momentDate: LocalDate?,
+        val momentTime: LocalTime?,
+        val line: Int,
+        val x: Double,
+        val excerptTitle: String,
+        val excerptSummary: String?,
         val content: String?,
     )
 }
