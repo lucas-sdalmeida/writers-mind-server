@@ -3,6 +3,7 @@ package com.lucassdalmeida.writing.web.fragment
 import com.lucassdalmeida.writing.application.fragments.add.AddChapterService
 import com.lucassdalmeida.writing.application.fragments.add.AddExcerptService
 import com.lucassdalmeida.writing.application.fragments.find.FindFragmentService
+import com.lucassdalmeida.writing.application.fragments.move.MoveFragmentService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -18,6 +19,7 @@ class StoryFragmentController(
     private val addExcerptService: AddExcerptService,
     private val addChapterService: AddChapterService,
     private val findFragmentService: FindFragmentService,
+    private val moveFragmentService: MoveFragmentService,
 ) {
     @PostMapping("fragment")
     fun postFragment(
@@ -83,6 +85,33 @@ class StoryFragmentController(
         return ResponseEntity.ok(response)
     }
 
+    @PatchMapping("fragment/{fragmentId}/position")
+    fun moveFragment(
+        @PathVariable authorId: UUID,
+        @PathVariable storyId: UUID,
+        @PathVariable fragmentId: UUID,
+        @RequestBody body: PatchFragmentRequest,
+    ): ResponseEntity<*> {
+        val (narrativeThreadId, line, deltaX) = body
+        val response = moveFragmentService
+            .move(MoveFragmentService.RequestModel(fragmentId, narrativeThreadId, line, deltaX))
+        return ResponseEntity.ok(response)
+    }
+
+    @PatchMapping("fragment/{fragmentId}/position/chapter/{chapterId}")
+    fun moveFragment(
+        @PathVariable authorId: UUID,
+        @PathVariable storyId: UUID,
+        @PathVariable fragmentId: UUID,
+        @PathVariable chapterId: UUID,
+        @RequestBody body: PatchFragmentRequest,
+    ): ResponseEntity<*> {
+        val (narrativeThreadId, line, deltaX) = body
+        val response = moveFragmentService
+            .moveToChapter(chapterId, MoveFragmentService.RequestModel(fragmentId, narrativeThreadId, line, deltaX))
+        return ResponseEntity.ok(response)
+    }
+
     data class PostFragmentRequest(
         val narrativeThreadId: UUID?,
         val title: String,
@@ -105,5 +134,11 @@ class StoryFragmentController(
         val excerptTitle: String,
         val excerptSummary: String?,
         val content: String?,
+    )
+
+    data class PatchFragmentRequest(
+        val narrativeThreadId: UUID?,
+        val line: Int,
+        val deltaX: Double,
     )
 }

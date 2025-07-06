@@ -14,11 +14,13 @@ import com.lucassdalmeida.writing.application.thread.repository.toEntity
 import com.lucassdalmeida.writing.domain.model.fragment.Chapter
 import com.lucassdalmeida.writing.domain.model.fragment.Excerpt
 import com.lucassdalmeida.writing.domain.model.fragment.StoryFragment
+import com.lucassdalmeida.writing.domain.model.fragment.StoryFragmentId
 import com.lucassdalmeida.writing.domain.model.fragment.TimeLinePosition
 import com.lucassdalmeida.writing.domain.model.fragment.toStoryFragmentId
 import com.lucassdalmeida.writing.domain.model.thread.CharacterBiographyThread
 import com.lucassdalmeida.writing.domain.model.thread.NarrativeThread
 import com.lucassdalmeida.writing.domain.model.thread.VolumeThread
+import com.lucassdalmeida.writing.domain.model.thread.toNarrativeThreadId
 import java.util.*
 
 class MoveFragmentServiceImpl(
@@ -29,19 +31,33 @@ class MoveFragmentServiceImpl(
         val fragment = storyFragmentRepository.findById(request.id)
             ?.toEntity()
             ?: throw EntityNotFoundException("There's no fragment with id ${request.id}!")
+
         val narrativeThread = fetchNarrativeThread(request.narrativeThreadId)
+        val lines = storyFragmentRepository.findAllByNarrativeThreadId(request.narrativeThreadId)
+            .map { it.toEntity() }
+            .groupBy { it.actualPosition.line }
+        val chapterOldLine = fragment.actualPosition.line
 
         fragment.apply {
             narrativeThreadId = narrativeThread?.id
-            placementPosition = TimeLinePosition(request.line, request.x)
+            placementPosition = TimeLinePosition(request.line, placementPosition.x + request.deltaX)
             if (this is Excerpt) chapterId = null
         }
-        calculateLine(fragment, request)
+        calculateLine(fragment, request, lines)
 
-        storyFragmentRepository.save(fragment.toDto())
+        val movedFragments = mutableListOf(fragment)
+        if (fragment is Chapter)
+            movedFragments.addAll(updateChapterFragments(fragment.id, chapterOldLine, request, lines))
 
-        val dto = fragment.toFragmentDto(request, narrativeThread)
-        return ResponseModel(dto, null)
+        movedFragments.forEach {
+            storyFragmentRepository.save(it.toDto())
+        }
+
+        return ResponseModel(
+            movedFragments
+                .map { it.toFragmentDto(narrativeThread) }
+                .associateBy { it.id }
+        )
     }
 
     private fun fetchNarrativeThread(narrativeThreadId: UUID?): NarrativeThread? {
@@ -52,11 +68,10 @@ class MoveFragmentServiceImpl(
             ?: throw EntityNotFoundException("The narrative thread of id $narrativeThreadId does not exist!")
     }
 
-    private fun calculateLine(fragment: StoryFragment, request: RequestModel) {
-        val lines = storyFragmentRepository.findAllByNarrativeThreadId(request.narrativeThreadId)
-            .map { it.toEntity() }
-            .groupBy { it.actualPosition.line }
-        if (lines[fragment.actualPosition.line]?.none { it.isNear(fragment) } == true)
+    private fun calculateLine(fragment: StoryFragment, request: RequestModel, lines: Map<Int, List<StoryFragment>>) {
+        if (lines[fragment.actualPosition.line] == null)
+            return
+        if (lines[fragment.actualPosition.line]?.none { areColliding(fragment, it) } == true)
             return
 
         for ((line, points) in lines) {
@@ -70,11 +85,36 @@ class MoveFragmentServiceImpl(
         fragment.apply { placementPosition = placementPosition.copy(line = line) }
     }
 
-    private fun StoryFragment.toFragmentDto(
+    private fun updateChapterFragments(
+        chapterId: StoryFragmentId,
+        chapterOldLine: Int,
         request: RequestModel,
+        lines: Map<Int, List<StoryFragment>>,
+    ): List<StoryFragment> {
+        return lines[chapterOldLine]!!
+            .filter { it is Excerpt && it.chapterId == chapterId }
+            .map {
+                it.apply {
+                    narrativeThreadId = request.narrativeThreadId?.toNarrativeThreadId()
+                    placementPosition = TimeLinePosition(request.line, placementPosition.x + request.deltaX)
+                }
+            }
+    }
+
+    private fun areColliding(fragment: StoryFragment, other: StoryFragment): Boolean {
+        if (fragment == other)
+            return false
+        if (fragment is Chapter && other is Excerpt && fragment.id == other.chapterId)
+            return false
+        if (fragment is Excerpt && other is Chapter && fragment.chapterId == other.id)
+            return false
+        return fragment.isNear(other)
+    }
+
+    private fun StoryFragment.toFragmentDto(
         narrativeThread: NarrativeThread?,
     ) = FragmentDto(
-        request.id,
+        id.value,
         storyId.value,
         narrativeThread?.id?.value,
         if (narrativeThread is VolumeThread) narrativeThread.volumeId.value else null,
@@ -93,22 +133,27 @@ class MoveFragmentServiceImpl(
         require(fragment is Excerpt) { "Unable to add a chapter to another one! ${request.id} is a chapter!" }
 
         val narrativeThread = fetchNarrativeThread(request.narrativeThreadId)
+        val lines = storyFragmentRepository.findAllByNarrativeThreadId(request.narrativeThreadId)
+            .map { it.toEntity() }
+            .groupBy { it.actualPosition.line }
         val chapter = fetchChapter(chapterId)
 
         fragment.apply {
             narrativeThreadId = narrativeThread?.id
-            placementPosition = TimeLinePosition(request.line, request.x)
+            placementPosition = TimeLinePosition(request.line, placementPosition.x + request.deltaX)
             this.chapterId = chapterId.toStoryFragmentId()
         }
         chapter.addExcerpt(fragment)
-        calculateLine(chapter, request)
+        calculateLine(chapter, request, lines)
 
         storyFragmentRepository.save(chapter.toDto())
         storyFragmentRepository.save(fragment.toDto())
 
         return ResponseModel(
-            fragment.toFragmentDto(request, narrativeThread),
-            chapter.toFragmentDto(request, narrativeThread)
+            mutableMapOf(
+                fragment.id.value to fragment.toFragmentDto(narrativeThread),
+                chapter.id.value to chapter.toFragmentDto(narrativeThread),
+            )
         )
     }
 

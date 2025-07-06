@@ -12,13 +12,10 @@ interface MoveFragmentService {
         val id: UUID,
         val narrativeThreadId: UUID?,
         val line: Int,
-        val x: Double,
+        val deltaX: Double,
     )
 
-    data class ResponseModel(
-        val fragment: FragmentDto,
-        val chapter: FragmentDto?,
-    )
+    data class ResponseModel(val movedFragments: Map<UUID, FragmentDto>)
 
     data class FragmentDto(
         val id: UUID,

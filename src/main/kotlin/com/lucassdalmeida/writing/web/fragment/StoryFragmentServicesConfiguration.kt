@@ -8,6 +8,8 @@ import com.lucassdalmeida.writing.application.fragments.add.impl.AddExcerptServi
 import com.lucassdalmeida.writing.application.fragments.file.SaveFileService
 import com.lucassdalmeida.writing.application.fragments.find.FindFragmentService
 import com.lucassdalmeida.writing.application.fragments.find.impl.FindFragmentServiceImpl
+import com.lucassdalmeida.writing.application.fragments.move.MoveFragmentService
+import com.lucassdalmeida.writing.application.fragments.move.impl.MoveFragmentServiceImpl
 import com.lucassdalmeida.writing.application.fragments.repository.StoryFragmentRepository
 import com.lucassdalmeida.writing.application.story.repository.StoryRepository
 import com.lucassdalmeida.writing.application.thread.repository.NarrativeThreadRepository
@@ -56,4 +58,10 @@ class StoryFragmentServicesConfiguration {
         storyFragmentRepository: StoryFragmentRepository,
         narrativeThreadRepository: NarrativeThreadRepository,
     ): FindFragmentService = FindFragmentServiceImpl(storyFragmentRepository, narrativeThreadRepository)
+
+    @Bean
+    fun moveFragmentService(
+        storyFragmentRepository: StoryFragmentRepository,
+        narrativeThreadRepository: NarrativeThreadRepository,
+    ): MoveFragmentService = MoveFragmentServiceImpl(storyFragmentRepository, narrativeThreadRepository)
 }
